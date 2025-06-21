@@ -1,0 +1,32 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*.so
+*.zip
+
+# Virtual environments
+.venv/
+env/
+venv/
+
+# VSCode
+.vscode/
+
+# Jupyter Notebooks
+.ipynb_checkpoints
+
+# Pytest
+.cache/
+
+# Mac/Linux
+.DS_Store
+
+# Logs
+*.log
+
+# Secrets
+.env
+*.json.secret
+
+# GCP key files (NEVER push!)
+*.json

@@ -1,0 +1,16 @@
+# 기본 Python 패키지
+pydantic
+requests
+beautifulsoup4
+openai
+python-dotenv
+
+# Google Cloud 관련
+google-cloud-firestore
+firebase-admin
+
+# Cloud Functions 2nd Gen HTTP 핸들링용
+functions-framework
+
+# Flask (Cloud Functions용 HTTP 요청 처리)
+flask
