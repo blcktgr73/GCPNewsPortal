@@ -1,0 +1,56 @@
+name: Deploy to GCP
+
+on:
+  push:
+    branches: [ main ]
+
+env:
+  PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+  REGION: asia-northeast3
+  SERVICE_ACCOUNT_JSON: ${{ secrets.GCP_SA_KEY }}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up gcloud CLI
+        uses: google-github-actions/setup-gcloud@v1
+        with:
+          version: "latest"
+          service_account_key: ${{ env.SERVICE_ACCOUNT_JSON }}
+          project_id: ${{ env.PROJECT_ID }}
+
+      - name: Deploy FastAPI backend to Cloud Run
+        run: |
+          gcloud run deploy news-backend \
+            --source=./backend \
+            --region=${{ env.REGION }} \
+            --allow-unauthenticated \
+            --platform=managed
+
+      - name: Deploy news_summarizer to Cloud Functions
+        run: |
+          gcloud functions deploy summarize_news \
+            --gen2 \
+            --runtime python310 \
+            --entry-point summarize_news \
+            --source=./news_summarizer \
+            --region=${{ env.REGION }} \
+            --trigger-http \
+            --allow-unauthenticated \
+            --set-secrets=GEMINI_API_KEY=projects/gcpnewsportal/secrets/gemini-api-key:latest
+
+      - name: Deploy trigger_function to Cloud Functions
+        run: |
+          gcloud functions deploy trigger_news_summary \
+            --gen2 \
+            --runtime python310 \
+            --entry-point trigger_news_summary \
+            --source=./trigger_function \
+            --region=${{ env.REGION }} \
+            --trigger-topic trigger-news-summary \
+            --allow-unauthenticated
