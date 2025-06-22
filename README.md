@@ -12,15 +12,14 @@ React Native 앱을 통해 요약 결과 확인 및 키워드 관리 가능.
 ## 📁 디렉토리 구조
 
 ```
-news-summary-app/
+GCPNewsProtal/
 ├── backend/
 ├── news_summarizer/
 ├── rigger_function/
-├── shared/
+├── frontend/
 ├── .github/
 │ └── workflows/
 ```
-
 
 ## 🏗️ 배포 대상
 - GCP: Cloud Run, Cloud Functions, Firestore, Scheduler, Pub/Sub

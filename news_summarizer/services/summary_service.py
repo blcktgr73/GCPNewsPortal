@@ -43,6 +43,7 @@ def save_summary_to_firestore(title: str, url: str, summary: str, keyword: str, 
         "source": "Google",
         "category": "News",
         "keywords": [keyword],
+        "user_id": user_id,
         "summaryTokens": len(summary.split())
     })
     print(f"[SAVE] 저장 완료: {title}")

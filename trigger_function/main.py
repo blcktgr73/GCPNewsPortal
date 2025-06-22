@@ -16,6 +16,7 @@ def trigger_news_summary(event, context):
 
     user_id = data.get("user_id", "system")
     keywords = data.get("keywords", [])
+    print(f"user_id: {user_id}, keywords:{keywords}")
 
     if not keywords or not user_id:
         print("Missing user_id or keywords")
@@ -27,7 +28,7 @@ def trigger_news_summary(event, context):
     headers = {"Content-Type": "application/json"}
 
     for keyword in keywords:
-        body = {"keyword": keyword, "user_id": user_id}
+        body = {"user_id": user_id, "keyword": keyword}
         try:
             response = requests.post(worker_url, json=body, headers=headers)
             print(f"Worker response: {response.status_code} - {response.text}")
