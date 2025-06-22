@@ -10,6 +10,8 @@ React Native 앱을 통해 요약 결과 확인 및 키워드 관리 가능.
 - Firebase Auth 기반 사용자 인증
 
 ## 📁 디렉토리 구조
+
+```
 news-summary-app/
 ├── backend/
 ├── news_summarizer/
@@ -17,7 +19,7 @@ news-summary-app/
 ├── shared/
 ├── .github/
 │ └── workflows/
-
+```
 
 
 ## 🏗️ 배포 대상
