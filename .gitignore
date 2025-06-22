@@ -27,6 +27,7 @@ venv/
 # Secrets
 .env
 *.json.secret
+*.b64
 
 # GCP key files (NEVER push!)
 *.json

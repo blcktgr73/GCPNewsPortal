@@ -18,9 +18,11 @@ def create_pubsub_event(data_dict):
 
 # 실행
 if __name__ == "__main__":
-    test_event = create_pubsub_event({
-        "keyword": "AI 기술",
-        "user_id": "user123"
-    })
-    trigger_news_summary(test_event, MockContext())
-    print("Finished")
+    # 테스트 키워드 목록
+    user_id = "user123"
+    keywords = ["디플레이션", "부동산", "전세가", "KOSPI"]
+
+    print(f"[TEST] Triggering user_id = {user_id}, keywords: {keywords}")
+    event = create_pubsub_event({"user_id": user_id, "keywords": keywords})
+    trigger_news_summary(event, MockContext())
+    print("Event Triggered")
