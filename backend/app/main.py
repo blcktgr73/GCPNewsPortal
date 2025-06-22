@@ -1,7 +1,8 @@
-from fastapi import FastAPI, HTTPException, Query
+from fastapi import FastAPI, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from app.firebase_init import *  # 초기화 먼저!
-from services.summary_service import save_summary, get_summaries, fetch_summaries_by_user
+from services.summary_service import save_summary, fetch_summaries_by_user
+from services.auth_service import verify_firebase_token
 from models.summary_model import NewsSummary 
 
 app = FastAPI()
@@ -23,12 +24,8 @@ def post_summary(user_id: str, summary: NewsSummary):
     save_summary(user_id, summary)
     return {"status": "summary saved"}
 
-@app.get("/summary/{user_id}")
-def list_summaries(user_id: str):
-    return get_summaries(user_id)
-
 @app.get("/summaries")
-def get_summaries(user_id: str = Query(...)):
+def get_summaries(user_id: str = Depends(verify_firebase_token)):
     try:
         results = fetch_summaries_by_user(user_id)
         return results
