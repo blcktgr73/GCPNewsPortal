@@ -4,6 +4,9 @@ from datetime import datetime
 db = firestore.Client()
 
 def add_keyword(user_id: str, keyword: str) -> str:
+    # ✅ 상위 user 문서가 없다면 빈 문서라도 생성 (merge=True)
+    db.collection("users").document(user_id).set({}, merge=True)
+    
     keyword_ref = db.collection("users").document(user_id).collection("keywords")
     existing = keyword_ref.where("keyword", "==", keyword).limit(1).stream()
     if any(existing):

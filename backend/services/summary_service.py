@@ -5,6 +5,9 @@ from typing import List, Dict
 db = firestore.client()
 
 def save_summary(user_id: str, summary: NewsSummary):
+    # ✅ 사용자 문서가 Firestore에 존재하도록 보장
+    db.collection("users").document(user_id).set({}, merge=True)
+
     doc_ref = db.collection("users").document(user_id).collection("summaries").document()
     doc_ref.set(summary.dict())
 

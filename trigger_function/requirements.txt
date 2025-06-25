@@ -1,1 +1,10 @@
+pydantic
 requests
+python-dotenv
+
+google-cloud-firestore
+google-cloud-pubsub
+firebase-admin
+
+functions-framework
+flask
