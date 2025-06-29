@@ -7,7 +7,8 @@ React Native 앱을 통해 요약 결과 확인 및 키워드 관리 가능.
 - FastAPI + Cloud Run (백엔드)
 - Gemini 요약 + Firestore 저장 (Cloud Function)
 - Pub/Sub + Scheduler로 자동화
-- Firebase Auth 기반 사용자 인증
+- Firebase Auth 기반 사용자 인증 (email)
+- React Native Expo 기반 Frontend
 
 ## 📁 디렉토리 구조
 
