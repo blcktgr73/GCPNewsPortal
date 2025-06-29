@@ -1,8 +1,8 @@
-from firebase_admin import firestore
+from google.cloud import firestore
 from models.summary_model import NewsSummary
 from typing import List, Dict
 
-db = firestore.client()
+db = firestore.Client()
 
 def save_summary(user_id: str, summary: NewsSummary):
     # ✅ 사용자 문서가 Firestore에 존재하도록 보장
