@@ -16,14 +16,16 @@ def fetch_summaries_by_user(user_id: str) -> List[Dict]:
         db.collection("users")
         .document(user_id)
         .collection("summaries")
-        .order_by("createdAt", direction=firestore.Query.DESCENDING)
+        .order_by("created_at", direction=firestore.Query.DESCENDING)
     )
     docs = summaries_ref.stream()
 
     results = []
     for doc in docs:
+        print(f"doc.id: {doc.id}, fields: {doc.to_dict()}")
         data = doc.to_dict()
         data["id"] = doc.id
         results.append(data)
 
     return results
+

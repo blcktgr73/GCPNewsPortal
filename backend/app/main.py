@@ -6,6 +6,7 @@ from services.auth_service import verify_firebase_token
 from models.summary_model import NewsSummary 
 from models.keyword_model import KeywordCreate, KeywordItem
 from services.keyword_service import add_keyword, get_keywords, delete_keyword
+#from services.summary_service import summarize_and_store
 
 app = FastAPI()
 
@@ -21,11 +22,6 @@ app.add_middleware(
 def root():
     return {"message": "API is running"}
 
-@app.post("/summary/{user_id}")
-def post_summary(user_id: str, summary: NewsSummary):
-    save_summary(user_id, summary)
-    return {"status": "summary saved"}
-
 @app.get("/summaries")
 def get_summaries(user_id: str = Depends(verify_firebase_token)):
     try:
@@ -38,7 +34,11 @@ def get_summaries(user_id: str = Depends(verify_firebase_token)):
 def post_keyword(data: KeywordCreate, user_id: str = Depends(verify_firebase_token)):
     try:
         keyword_id = add_keyword(user_id, data.keyword)
-        return {"status": "keyword added", "id": keyword_id}
+
+        # 🔽 추가: 키워드로 뉴스 수집 및 요약 생성. 동작 안되서 미뤄둠
+        #summary = summarize_and_store(user_id, data.keyword)
+
+        return {"status": "keyword added and summary saved", "id": keyword_id}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
