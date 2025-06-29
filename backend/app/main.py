@@ -6,7 +6,7 @@ from services.auth_service import verify_firebase_token
 from models.summary_model import NewsSummary 
 from models.keyword_model import KeywordCreate, KeywordItem
 from services.keyword_service import add_keyword, get_keywords, delete_keyword
-#from services.summary_service import summarize_and_store
+from services.summary_service import summarize_and_store
 
 app = FastAPI()
 
@@ -35,8 +35,8 @@ def post_keyword(data: KeywordCreate, user_id: str = Depends(verify_firebase_tok
     try:
         keyword_id = add_keyword(user_id, data.keyword)
 
-        # 🔽 추가: 키워드로 뉴스 수집 및 요약 생성. 동작 안되서 미뤄둠
-        #summary = summarize_and_store(user_id, data.keyword)
+        # 🔽 추가: 키워드로 뉴스 수집 및 요약 생성.
+        summarize_and_store(user_id, data.keyword)
 
         return {"status": "keyword added and summary saved", "id": keyword_id}
     except Exception as e:

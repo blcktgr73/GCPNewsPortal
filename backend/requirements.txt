@@ -8,3 +8,7 @@ google-cloud-firestore
 fastapi
 pydantic
 firebase-admin
+
+# 추가 Python 패키지
+beautifulsoup4
+openai
