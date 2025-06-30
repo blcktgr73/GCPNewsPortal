@@ -18,8 +18,8 @@ GCPNewsProtal/
 ├── news_summarizer/
 ├── rigger_function/
 ├── frontend/
-├── .github/
-│ └── workflows/
+└── .github/
+    └── workflows/
 ```
 
 ## 🏗️ 배포 대상
