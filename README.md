@@ -24,3 +24,13 @@ GCPNewsProtal/
 
 ## 🏗️ 배포 대상
 - GCP: Cloud Run, Cloud Functions, Firestore, Scheduler, Pub/Sub
+
+## 동작 화면
+로그인 화면
+![로그인](./screenshots/login.jpg)
+
+뉴스요약 화면
+![뉴스](./screenshots/summaries.jpg)
+
+키워드 입력 화면
+![뉴스](./screenshots/keywords.jpg)
