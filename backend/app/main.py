@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException, Depends
+from fastapi import FastAPI, HTTPException, Depends, Query
 from fastapi.middleware.cors import CORSMiddleware
 from app.firebase_init import *  # 초기화 먼저!
 from services.summary_service import save_summary, fetch_summaries_by_user
@@ -26,6 +26,18 @@ def root():
 def get_summaries(user_id: str = Depends(verify_firebase_token)):
     try:
         results = fetch_summaries_by_user(user_id)
+        return results
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/summaries/paginated")
+def get_summaries_paginated(
+    user_id: str = Depends(verify_firebase_token),
+    skip: int = Query(0, ge=0, description="Number of items to skip"),
+    limit: int = Query(10, ge=1, le=100, description="Number of items to return"),
+):
+    try:
+        results = fetch_summaries_by_user(user_id, skip=skip, limit=limit)
         return results
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

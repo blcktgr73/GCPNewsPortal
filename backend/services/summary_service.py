@@ -13,12 +13,14 @@ def save_summary(user_id: str, summary: NewsSummary):
     doc_ref = db.collection("users").document(user_id).collection("summaries").document()
     doc_ref.set(summary.dict())
 
-def fetch_summaries_by_user(user_id: str) -> List[Dict]:
+def fetch_summaries_by_user(user_id: str, skip: int = 0, limit: int = 10) -> List[Dict]:
     summaries_ref = (
         db.collection("users")
         .document(user_id)
         .collection("summaries")
         .order_by("created_at", direction=firestore.Query.DESCENDING)
+        .offset(skip)
+        .limit(limit)
     )
     docs = summaries_ref.stream()
 
