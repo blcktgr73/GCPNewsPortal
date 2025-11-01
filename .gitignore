@@ -72,5 +72,5 @@ yarn-error.*
 # typescript
 *.tsbuildinfo
 
-# Claude
+# Claude working directory
 .claude/
