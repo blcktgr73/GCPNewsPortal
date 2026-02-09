@@ -1,0 +1,33 @@
+name: CI - Unit Tests
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python 3.11
+      uses: actions/setup-python@v3
+      with:
+        python-version: "3.11"
+        
+    - name: Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        # Install dependencies for news_summarizer to resolve imports
+        if [ -f news_summarizer/requirements.txt ]; then pip install -r news_summarizer/requirements.txt; fi
+        # Install testing tools
+        pip install pytest pytest-mock
+        
+    - name: Run Tests
+      env:
+        GEMINI_API_KEY: "test_key"
+      run: |
+        # Run pytest. The tests/test_news_summarizer_gemini.py file handles sys.path modification to import modules correctly.
+        pytest tests/
