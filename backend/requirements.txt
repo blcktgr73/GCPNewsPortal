@@ -12,3 +12,4 @@ firebase-admin
 # 추가 Python 패키지
 beautifulsoup4
 openai
+google-generativeai
