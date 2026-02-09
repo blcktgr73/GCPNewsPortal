@@ -12,7 +12,10 @@ GCP News Portal is a serverless application built on Google Cloud Platform. It c
 
 ### 2. News Summarizer Worker (@news_summarizer)
 - **Technology**: Python, Cloud Functions (Gen 2).
-- **Function**: Processes a single (User, Keyword) tuple. Fetches news, summarizes it using AI, and stores it in Firestore.
+- **Function**: Processes a single (User, Keyword) tuple.
+    - **Step 1 (Grounding)**: Uses Gemini 1.5 Flash with **Google Search Tool** to discover latest news.
+    - **Step 2 (Formatting)**: Uses Gemini to parse search results into structured JSON (Title, Url, Source, Date, Summary).
+    - **Storage**: Stores summarized data in Firestore.
 - **Trigger**: Pub/Sub topic `gcpnewsportal/worker-news-summary`.
 
 ### 3. Trigger Function (@trigger_function)
@@ -31,6 +34,6 @@ GCP News Portal is a serverless application built on Google Cloud Platform. It c
 ## Data Flow
 1. **User Action**: User adds keyword via App -> API -> Firestore.
 2. **Scheduled Trigger**: Cloud Scheduler -> Trigger Function -> Fetch Keywords -> Pub/Sub (1 message per keyword).
-3. **Processing**: Pub/Sub -> News Summarizer -> External News API -> AI Summarization -> Firestore.
+3. **Processing**: Pub/Sub -> News Summarizer -> Gemini API (Grounding + Summarization) -> Firestore.
 4. **Consumption**: User opens App -> API -> Firestore (Query Summaries) -> App.
 5. **Maintenance**: Cloud Scheduler -> Cleanup Function -> Firestore (Batch Delete).
