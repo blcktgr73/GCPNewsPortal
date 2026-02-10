@@ -8,17 +8,13 @@ import json
 # Adjust path to include news_summarizer
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'news_summarizer'))
 
-# Use this to safely modify module variables
-import services.gemini_service
+from services.gemini_service import fetch_grounded_news, _get_google_news_rss, _analyze_article_with_gemini
 
 class TestGeminiServiceHybrid(unittest.TestCase):
 
-    def setUp(self):
-        # Force set api_key for testing since module level initialization might fail or be empty
-        services.gemini_service.api_key = "test_key"
-
     @patch('services.gemini_service.genai')
     @patch('services.gemini_service.requests.get')
+    @patch.dict(os.environ, {"GEMINI_API_KEY": "test_key"})
     def test_fetch_grounded_news_success(self, mock_requests_get, mock_genai):
         # 1. Mock RSS Response (Phase 1)
         mock_rss_response = MagicMock()
@@ -55,8 +51,6 @@ class TestGeminiServiceHybrid(unittest.TestCase):
         mock_model.generate_content.return_value = mock_response
 
         # Execute
-        # Need to import function after setup or use from module
-        from services.gemini_service import fetch_grounded_news
         results = fetch_grounded_news("Gemini", max_results=1)
 
         # Assertions
@@ -69,6 +63,7 @@ class TestGeminiServiceHybrid(unittest.TestCase):
         mock_model.generate_content.assert_called_once() # Gemini Analysis
 
     @patch('services.gemini_service.requests.get')
+    @patch.dict(os.environ, {"GEMINI_API_KEY": "test_key"})
     def test_rss_failure(self, mock_requests_get):
         # Mock RSS Failure
         mock_response = MagicMock()
@@ -76,7 +71,6 @@ class TestGeminiServiceHybrid(unittest.TestCase):
         mock_requests_get.return_value = mock_response
         
         # Execute
-        from services.gemini_service import fetch_grounded_news
         results = fetch_grounded_news("Gemini")
         
         # Assertions
@@ -84,6 +78,7 @@ class TestGeminiServiceHybrid(unittest.TestCase):
 
     @patch('services.gemini_service.genai')
     @patch('services.gemini_service.requests.get')
+    @patch.dict(os.environ, {"GEMINI_API_KEY": "test_key"})
     def test_gemini_analysis_failure(self, mock_requests_get, mock_genai):
         # 1. Mock RSS Success
         mock_rss_response = MagicMock()
@@ -110,7 +105,6 @@ class TestGeminiServiceHybrid(unittest.TestCase):
         mock_model.generate_content.side_effect = Exception("API Error")
         
         # Execute
-        from services.gemini_service import fetch_grounded_news
         results = fetch_grounded_news("Gemini")
         
         # Should return empty list because the only article failed to process

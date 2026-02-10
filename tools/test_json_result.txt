@@ -1,0 +1,7 @@
+{
+    "title": "Google’s Gemini Emerges as a Serious Challenger to ChatGPT in South Korea",
+    "source_name": "kmjournal.net",
+    "published_at": "2026-02-10 05:50",
+    "url": "https://news.google.com/rss/articles/CBMiakFVX3lxTE5RR0IwbTlwcEdTQkZzSkI2NU1ZRm0tc2R3al9vYmduQTBLVmh1SFdFWnJiSkhqR2FJR1d1Q3hNRFF5dE8zMlREU0o2RE5aSndrRDdGRm9UbTU3NmtYZGpvNndFbjFvSFJlcHc?oc=5",
+    "summary": "구글의 인공지능 모델인 제미나이(Gemini)가 한국 시장에서 오픈AI의 챗GPT에 맞서는 강력한 경쟁자로 급부상하고 있습니다. 한국어 처리 능력의 향상과 구글 서비스와의 연동성을 바탕으로 국내 사용자들 사이에서 입지를 넓히고 있으며, 생성형 AI 시장의 주도권을 잡기 위한 경쟁이 더욱 치열해지고 있습니다."
+}
