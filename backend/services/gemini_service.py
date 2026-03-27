@@ -15,7 +15,7 @@ def fetch_grounded_news(keyword: str, max_results: int = 5):
     """
     Hybrid approach:
     1. Fetch news links via Google News RSS.
-    2. Use Gemini 1.5 Flash (or gemini-flash-latest) to analyze each link and format as JSON.
+    2. Use Gemini 2.5 Flash to analyze each link and format as JSON.
     """
     if not api_key:
         print("GEMINI_API_KEY not found.")
@@ -74,9 +74,8 @@ def _get_google_news_rss(keyword: str, max_results: int):
         return []
 
 def _analyze_article_with_gemini(article):
-    # Model: gemini-flash-latest (Stable & Fast)
     model = genai.GenerativeModel(
-        "gemini-flash-latest",
+        "gemini-2.5-flash",
         generation_config={"response_mime_type": "application/json"}
     )
     
