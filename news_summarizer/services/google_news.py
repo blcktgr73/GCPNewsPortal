@@ -98,7 +98,7 @@ def summarize_with_gpt(title, url):
     
 
 API_KEY = os.getenv("GEMINI_API_KEY")
-API_URL = "https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent"
+API_URL = "https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash-lite:generateContent"
 
 headers = {
     "Content-Type": "application/json"

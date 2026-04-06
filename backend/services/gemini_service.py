@@ -75,7 +75,7 @@ def _get_google_news_rss(keyword: str, max_results: int):
 
 def _analyze_article_with_gemini(article):
     model = genai.GenerativeModel(
-        "gemini-2.5-flash",
+        "gemini-2.5-flash-lite",
         generation_config={"response_mime_type": "application/json"}
     )
     
