@@ -1,5 +1,5 @@
 from google.cloud import firestore
-from datetime import datetime
+from datetime import datetime, timezone
 
 db = firestore.Client()
 
@@ -15,7 +15,7 @@ def add_keyword(user_id: str, keyword: str) -> str:
     doc_ref = keyword_ref.document()
     doc_ref.set({
         "keyword": keyword,
-        "created_at": datetime.utcnow().isoformat()
+        "created_at": datetime.now(timezone.utc).isoformat()
     })
     return doc_ref.id
 

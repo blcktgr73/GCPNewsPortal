@@ -1,28 +1,21 @@
-# news_summary.py
-
 import requests
 from bs4 import BeautifulSoup
-from openai import OpenAI
 from datetime import datetime
 import os
 import json
-#from dotenv import load_dotenv
 
 # 전역 디버그 설정
 DEBUG_MODE = False
 
-headers = {'User-Agent': 'Mozilla/5.0'}
-
-# .env 경로 설정
-#load_dotenv(os.path.join(os.path.dirname(__file__), "..", ".env"))
+_default_headers = {'User-Agent': 'Mozilla/5.0'}
 
 def get_naver_news(query, max_results=3):
     url = f"https://search.naver.com/search.naver?where=news&query={query}"
-    res = requests.get(url, headers=headers)
+    res = requests.get(url, headers=_default_headers)
 
     soup = BeautifulSoup(res.text, 'html.parser')
     items = soup.select('a[href^="https://n.news.naver.com/"]')[:max_results]
-    
+
     # 디버깅 뉴스 갯수 출력
     if DEBUG_MODE:
         print(f"[NAVER] 뉴스 개수: {len(items)}")
@@ -53,7 +46,7 @@ def get_google_news(query, max_results=3):
 
 def fetch_article_content(url):
     try:
-        res = requests.get(url, headers=headers, timeout=5)
+        res = requests.get(url, headers=_default_headers, timeout=5)
         soup = BeautifulSoup(res.text, 'html.parser')
         paragraphs = soup.select('article p')
         text = '\n'.join([p.text.strip() for p in paragraphs if p.text.strip()])
@@ -79,28 +72,10 @@ def fetch_naver_article_content(url):
     except Exception as e:
         return f"(본문 수집 실패: {e})"
 
-def summarize_with_gpt(title, url):
-    client = OpenAI(api_key=os.getenv("OPENAI_API_KEY") or "YOUR KEY")
-    if "n.news.naver.com" in url:
-        content = fetch_naver_article_content(url)
-        prompt = f"다음은 뉴스 기사입니다. 기사의 제목을 첫 줄에 포함해주세요. 그리고, 핵심 내용을 3줄 이내로 요약해 주세요.\n\n제목: {title}\n본문:\n{content}"
-    else:
-        content = fetch_article_content(url)
-        prompt = f"다음은 뉴스 기사입니다. 핵심 내용을 3줄 이내로 요약해 주세요:\n\n제목: {title}\n내용: {content}"
-    try:
-        response = client.chat.completions.create(
-            model="gpt-3.5-turbo",
-            messages=[{"role": "user", "content": prompt}]
-        )
-        return response.choices[0].message.content.strip()
-    except Exception as e:
-        return f"(요약 실패: {e})"
-    
-
 API_KEY = os.getenv("GEMINI_API_KEY")
 API_URL = "https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash-lite:generateContent"
 
-headers = {
+_gemini_headers = {
     "Content-Type": "application/json"
 }
 
@@ -128,7 +103,7 @@ def summarize_with_gemini(title: str, url: str) -> str:
     }
 
     try:
-        response = requests.post(API_URL, headers=headers, params=params, data=json.dumps(data))
+        response = requests.post(API_URL, headers=_gemini_headers, params=params, data=json.dumps(data))
         response.raise_for_status()
         result = response.json()
         summary_text = result["candidates"][0]["content"]["parts"][0]["text"]
@@ -139,14 +114,10 @@ def summarize_with_gemini(title: str, url: str) -> str:
 
 
 def run_news_summary(query):
-    #result = {"네이버": [], "구글": []}
-    #for portal, func in [("네이버", get_naver_news), ("구글", get_google_news)]:
     result = {"구글": []}
     for portal, func in [("구글", get_google_news)]:
-
         try:
             for title, url in func(query):
-                #summary = summarize_with_gpt(title, url)
                 summary = summarize_with_gemini(title, url)
                 result[portal].append((title, url, summary))
         except Exception as e:

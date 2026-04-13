@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from google.cloud import firestore
 from services.gemini_service import fetch_grounded_news
 
@@ -46,7 +46,7 @@ def summarize_and_store(user_id: str, keyword: str):
             "keyword": keyword,
             "published_at": published_at,
             "source_name": source_name,
-            "created_at": datetime.utcnow().isoformat(),
+            "created_at": datetime.now(timezone.utc).isoformat(),
             "summaryTokens": len(summary.split()) if summary else 0,
             "type": "grounding_v1" # 버전/타입 구분용
         }

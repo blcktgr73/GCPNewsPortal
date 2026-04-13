@@ -1,6 +1,6 @@
 from fastapi import FastAPI, HTTPException, Depends, Query
 from fastapi.middleware.cors import CORSMiddleware
-from app.firebase_init import *  # 초기화 먼저!
+import app.firebase_init  # noqa: F401 — 초기화 먼저!
 from services.summary_service import save_summary, fetch_summaries_by_user
 from services.auth_service import verify_firebase_token
 from models.summary_model import NewsSummary 

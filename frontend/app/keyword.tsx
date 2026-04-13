@@ -11,14 +11,19 @@ import {
   TouchableOpacity,
   Alert,
 } from 'react-native';
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { getAuth, onAuthStateChanged, User } from 'firebase/auth';
 import axios from 'axios';
 import { BACKEND_URL } from '@env';
 
+interface KeywordItem {
+  id: string;
+  keyword: string;
+}
+
 export default function Keyword() {
-  const [keywords, setKeywords] = useState([]);
+  const [keywords, setKeywords] = useState<KeywordItem[]>([]);
   const [input, setInput] = useState('');
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<User | null>(null);
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
   const auth = getAuth();

@@ -11,15 +11,22 @@ import {
   Linking,
 } from 'react-native';
 import { useEffect, useState } from 'react';
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { getAuth, onAuthStateChanged, User } from 'firebase/auth';
 import axios from 'axios';
 import { useRouter } from 'expo-router';
 import { BACKEND_URL } from '@env';
 
+interface SummaryItem {
+  id: string;
+  title: string;
+  url: string;
+  summary: string;
+  created_at?: string;
+}
 
 export default function Summary() {
-  const [items, setItems] = useState([]);
-  const [user, setUser] = useState(null);
+  const [items, setItems] = useState<SummaryItem[]>([]);
+  const [user, setUser] = useState<User | null>(null);
   const auth = getAuth();
   const router = useRouter();
   const colorScheme = useColorScheme();
@@ -129,10 +136,5 @@ const styles = StyleSheet.create({
   container: { flex: 1, padding: 20 },
   itemContainer: { marginBottom: 20 },
   title: { fontSize: 16, fontWeight: 'bold', marginBottom: 4 },
-  url: {
-    fontSize: 14,
-    textDecorationLine: 'underline',
-    marginBottom: 4,
-  },
   summary: { fontSize: 14 },
 });

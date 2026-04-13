@@ -3,8 +3,6 @@ uvicorn
 pydantic
 requests
 beautifulsoup4
-python-dotenv
-openai
 google-generativeai
 google-cloud-firestore
 firebase-admin

@@ -4,7 +4,6 @@ import os
 import json
 import requests
 import xml.etree.ElementTree as ET
-from datetime import datetime
 
 # Initialize Gemini API
 api_key = os.getenv("GEMINI_API_KEY")

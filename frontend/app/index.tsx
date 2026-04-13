@@ -17,13 +17,14 @@ export default function Index() {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       console.log('✅ 로그인 성공:', userCredential.user.email);
       router.replace('/summary');
-    } catch (error: any) {
-      if (error.code === 'auth/user-not-found') {
+    } catch (error: unknown) {
+      const firebaseError = error as { code?: string; message?: string };
+      if (firebaseError.code === 'auth/user-not-found') {
         Alert.alert('사용자 없음', '회원가입 후 로그인하세요.');
-      } else if (error.code === 'auth/wrong-password') {
+      } else if (firebaseError.code === 'auth/wrong-password') {
         Alert.alert('비밀번호 오류', '비밀번호가 일치하지 않습니다.');
       } else {
-        Alert.alert('로그인 실패', error.message);
+        Alert.alert('로그인 실패', firebaseError.message ?? '알 수 없는 오류');
       }
     }
   };
@@ -33,8 +34,9 @@ export default function Index() {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       console.log('✅ 회원가입 성공:', userCredential.user.email);
       router.replace('/keyword');
-    } catch (error: any) {
-      Alert.alert('회원가입 실패', error.message);
+    } catch (error: unknown) {
+      const firebaseError = error as { message?: string };
+      Alert.alert('회원가입 실패', firebaseError.message ?? '알 수 없는 오류');
     }
   };
 

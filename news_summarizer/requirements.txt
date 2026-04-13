@@ -2,8 +2,6 @@
 pydantic
 requests
 beautifulsoup4
-openai
-python-dotenv
 google-generativeai
 
 # Google Cloud 관련
