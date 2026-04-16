@@ -71,6 +71,8 @@ These three pillars are not independent but operate in a cycle:
 
 ## Operating Principles
 
+Use subagent actively to save main context window.
+
 ### 1. Context Awareness & Structural Preservation
 
 * Preserve existing code and document structures. Expand context scope to **Usage Scenario Context** (User Journey preservation).
