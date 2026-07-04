@@ -1,7 +1,8 @@
 # 📰 News Summary App
 
-Google News 기반 키워드 뉴스 수집 + Gemini 요약 → Firestore 저장  
-React Native 앱을 통해 요약 결과 확인 및 키워드 관리 가능.
+Google News 기반 키워드 뉴스 수집 + Gemini 요약 → Firestore 저장.
+
+> 이 저장소는 백엔드/서버리스(GCP)만 다룹니다. 사용자용 React Native(Expo) 앱은 별도 저장소에서 관리됩니다.
 
 > 📋 Cross-project 운영 / 보안 / 정책은 [palab-platform](https://github.com/blcktgr73/palab-platform) (Private)에서 통합 관리됩니다.
 
@@ -10,7 +11,6 @@ React Native 앱을 통해 요약 결과 확인 및 키워드 관리 가능.
 - Gemini 요약 + Firestore 저장 (Cloud Function)
 - Pub/Sub + Scheduler로 자동화
 - Firebase Auth 기반 사용자 인증 (email)
-- React Native Expo 기반 Frontend
 
 ## 📁 디렉토리 구조
 
@@ -18,8 +18,8 @@ React Native 앱을 통해 요약 결과 확인 및 키워드 관리 가능.
 GCPNewsProtal/
 ├── backend/
 ├── news_summarizer/
-├── rigger_function/
-├── frontend/
+├── trigger_function/
+├── cleanup_function/
 └── .github/
     └── workflows/
 ```
