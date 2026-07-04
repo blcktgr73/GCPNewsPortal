@@ -75,3 +75,6 @@ env.yaml
 
 # Claude working directory
 .claude/
+!.claude/
+!.claude/skills/
+!.claude/skills/**
