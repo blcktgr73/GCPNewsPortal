@@ -10,6 +10,9 @@ api_key = os.getenv("GEMINI_API_KEY")
 if api_key:
     genai.configure(api_key=api_key)
 
+# Default summarization model pin. Override with GEMINI_MODEL env var.
+GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-3.1-flash-lite")
+
 def fetch_grounded_news(keyword: str, max_results: int = 5):
     """
     Hybrid approach:
@@ -74,7 +77,7 @@ def _get_google_news_rss(keyword: str, max_results: int):
 
 def _analyze_article_with_gemini(article):
     model = genai.GenerativeModel(
-        "gemini-2.5-flash-lite",
+        GEMINI_MODEL,
         generation_config={"response_mime_type": "application/json"}
     )
     

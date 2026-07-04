@@ -3,6 +3,8 @@
 **Date**: 2026-02-09
 **Status**: Proposed
 
+> **Note (2026-07-04, T-20260704-001)**: 아래 본문의 `gemini-2.5-flash` / `gemini-1.5-flash` 언급은 당시 기록이다. 현재 운영 요약 모델 핀은 `gemini-3.1-flash-lite` (env `GEMINI_MODEL`로 오버라이드 가능).
+
 ## Intent
 **Problem**:
 - The current news fetching relies on scraping `news.google.com` which is brittle and returns redirect URLs (`news.google.com/rss/...`) instead of original source links.
