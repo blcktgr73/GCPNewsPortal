@@ -73,8 +73,8 @@ def fetch_naver_article_content(url):
         return f"(본문 수집 실패: {e})"
 
 API_KEY = os.getenv("GEMINI_API_KEY")
-# Default summarization model pin. Override with GEMINI_MODEL env var.
-GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-3.1-flash-lite")
+# Summarization model pin. 변경은 여기서 (리뷰 + 배포 경로로).
+GEMINI_MODEL = "gemini-3.1-flash-lite"
 API_URL = f"https://generativelanguage.googleapis.com/v1/models/{GEMINI_MODEL}:generateContent"
 
 _gemini_headers = {

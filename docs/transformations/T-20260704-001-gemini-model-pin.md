@@ -26,7 +26,9 @@
     - 요약 엔진이 `gemini-2.5-flash-lite` → `gemini-3.1-flash-lite`로 상향. 요약 품질·지연·토큰 단가 가정이 새 모델 기준으로 이동한다.
     - 기본값이 바뀌었으나 `GEMINI_MODEL` env로 구모델 롤백/핀 고정이 가능하다.
 
-## Design Options (선택: B)
+> **개정 (2026-07-04)**: 최초 Option B(env 오버라이드)로 구현했으나, 이 프로젝트에선 `deploy.yml`이 `GEMINI_MODEL`을 주입하지 않아 프로덕션은 어차피 코드 기본값을 사용 → env 경로가 배선되지 않은 채 config 표면만 늘리는 문제. 모델 핀은 리뷰+배포로만 바뀌는 값이므로 **평문 상수 `GEMINI_MODEL = "gemini-3.1-flash-lite"`로 단순화하고 `os.getenv`와 `.env.example`의 `GEMINI_MODEL` 항목을 제거**했다. (동작 결과는 동일 — 기본값이 곧 운영 모델)
+
+## Design Options (최초 선택: B → 개정 후 A 변형: 평문 상수)
 - **A. 리터럴 직접 교체** — 최소 diff, 그러나 핀이 호출부에 잔존해 드리프트 재발.
 - **B. 모듈별 env-오버라이드 기본 상수 (선택)** — 파일당 핀 1점화 + env 오버라이드. "defaults use" AC와 정합, 패키지 독립성 유지.
 - **C. 공용 config 단일 소스** — 최상의 단일 진리값이나 backend·news_summarizer copy-중복 구조상 공통 import 경로 확보가 취약.
@@ -38,7 +40,7 @@
 - [x] 동작 재현: `GEMINI_MODEL` 미설정 시 기본값, 설정 시 오버라이드가 모델명·URL에 반영됨.
 - 주의: 이 환경엔 `bs4`/`google-generativeai` 미설치로 모듈 직접 import는 스킵, 동등 재현 smoke로 대체.
 - [x] 라이브 확인(read-only ListModels, 실키): `gemini-3.1-flash-lite`가 `v1`/`v1beta` 모두에 존재. raw REST 경로가 쓰는 `/v1/models/...`에서 유효 → 핀 실제 작동 확인.
-- 부수: 이번에 도입한 `GEMINI_MODEL` 오버라이드를 `backend/.env.example`, `news_summarizer/.env.example`에 문서화.
+- 개정 후: `GEMINI_MODEL`은 평문 상수. `.env.example`의 관련 항목은 제거됨.
 
 ## Linked Acceptance Criteria (Issue #1)
 - [x] production Gemini summarization defaults use `gemini-3.1-flash-lite`

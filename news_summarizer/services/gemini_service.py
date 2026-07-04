@@ -10,8 +10,8 @@ api_key = os.getenv("GEMINI_API_KEY")
 if api_key:
     genai.configure(api_key=api_key)
 
-# Default summarization model pin. Override with GEMINI_MODEL env var.
-GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-3.1-flash-lite")
+# Summarization model pin. 변경은 여기서 (리뷰 + 배포 경로로).
+GEMINI_MODEL = "gemini-3.1-flash-lite"
 
 def fetch_grounded_news(keyword: str, max_results: int = 5):
     """
