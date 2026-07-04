@@ -162,12 +162,6 @@ docs/
 ## Quick Reference
 
 ```bash
-# Issue tracking (bd/beads)
-bd ready              # Find available work
-bd show <id>          # View issue details
-bd close <id>         # Complete work
-bd sync               # Sync with git
-
 # Agent management (gt/Gas Town)
 gt mail inbox         # Check messages
 gt rig list           # List workspaces
@@ -187,7 +181,7 @@ Mandatory steps upon work completion:
 3. **Update Issue Status** - Mark as done/in-progress
 4. **Remote Push (Mandatory)**:
    ```bash
-   git pull --rebase && bd sync && git push
+   git pull --rebase && git push
    git status  # Confirm "up to date with origin"
    ```
 5. **Handoff** - Provide context for the next session
