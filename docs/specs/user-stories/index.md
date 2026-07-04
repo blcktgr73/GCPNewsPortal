@@ -8,6 +8,7 @@
 - [x] US-004: As a user, I want to view my news summaries.
 - [x] US-005: As a user, I want to browse paginated summaries for efficiency.
 - [x] US-006: As a user, I want the system to automatically summarize news for my keywords.
+- [x] US-007: As a user, I want long/messy summary titles shown truncated with a middle ellipsis (원본 보존, 응답 계층 정규화). See [news-consumption.md](./news-consumption.md). `[T-20260704-002]`
 
 ## System Maintenance Theme
 ### Epic: Data Hygiene

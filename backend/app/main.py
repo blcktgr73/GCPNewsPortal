@@ -1,6 +1,7 @@
 from fastapi import FastAPI, HTTPException, Depends, Query
 from fastapi.middleware.cors import CORSMiddleware
 import app.firebase_init  # noqa: F401 — 초기화 먼저!
+from app.text_utils import with_display_titles
 from services.summary_service import save_summary, fetch_summaries_by_user
 from services.auth_service import verify_firebase_token
 from models.summary_model import NewsSummary 
@@ -25,7 +26,7 @@ def root():
 @app.get("/summaries")
 def get_summaries(user_id: str = Depends(verify_firebase_token)):
     try:
-        results = fetch_summaries_by_user(user_id)
+        results = with_display_titles(fetch_summaries_by_user(user_id))
         return results
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -37,7 +38,9 @@ def get_summaries_paginated(
     limit: int = Query(10, ge=1, le=100, description="Number of items to return"),
 ):
     try:
-        results = fetch_summaries_by_user(user_id, skip=skip, limit=limit)
+        results = with_display_titles(
+            fetch_summaries_by_user(user_id, skip=skip, limit=limit)
+        )
         return results
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
