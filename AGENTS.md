@@ -56,6 +56,7 @@
 - `ops/skills/deployment-verify.md`
 - `ops/skills/security-baseline.md`
 - `ops/skills/kanban-sweep.md`
+- `ops/skills/acp-claude.md` — **(OpenClaw 코딩 봇)** dispatched(webhook 트리거) **코딩** 작업은 직접 코딩하지 말고 이 절차대로 Claude Code(ACP)에 위임한다 (`acp claude 사용해서 진행해줘`). 조회·요약만이면 직접 처리.
 
 흐름:
 `story-authoring` → `transformation` → `verify-ac`
