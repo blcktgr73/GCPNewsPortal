@@ -57,6 +57,7 @@
 - `ops/skills/security-baseline.md`
 - `ops/skills/kanban-sweep.md`
 - `ops/skills/acp-claude.md` — **(OpenClaw 코딩 봇)** dispatched(webhook 트리거) **코딩** 작업은 직접 코딩하지 말고 이 절차대로 Claude Code(ACP)에 위임한다 (`acp claude 사용해서 진행해줘`). 조회·요약만이면 직접 처리.
+> **dispatched 마무리**: 커밋만 남기고 끝내지 않는다. **push → PR 생성(`Closes #N` / 일부면 `Refs #N` + 남은 항목) → 카드에 PR 링크 댓글**까지가 한 건이다. 완료 판정·카드 닫기는 `github-project-closeout` 계약을 따른다. 여기서 멈춘 카드는 라우터의 정체(dead-letter) 감지에 잡힌다.
 
 흐름:
 `story-authoring` → `transformation` → `verify-ac`
