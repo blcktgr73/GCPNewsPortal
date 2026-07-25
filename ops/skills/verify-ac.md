@@ -4,7 +4,7 @@
 > **Verification Status 를 갱신**하고, **drift 를 표시**한다. = spec 구현이 적절한지 확인하는 절차.
 > **정본 절차** (런타임 무관). 판단 기준은 palab-platform governance 를 참조한다 (복제 X).
 > spec: [user-story-verification-governance](https://github.com/blcktgr73/palab-platform/blob/main/docs/operations/user-story-verification-governance.md)
-> 대상 문서(이 repo): `docs/specs/user-stories/index.md`, `docs/specs/user-stories/*.md`, `docs/guides/VERIFICATION.md`
+> 대상 문서(이 repo): `docs/specs/USER_STORY_MAP.md`, `docs/specs/AC.md`, `docs/specs/VERIFICATION.md`
 
 ## 언제 실행
 
@@ -13,17 +13,20 @@
 ## 입력
 
 - 변경 diff 또는 대상 범위.
-- 이 repo 의 `docs/specs/user-stories/*` 와 `docs/guides/VERIFICATION.md`.
+- 이 repo 의 `docs/specs/*` (Story Map / AC / Verification Status).
 
 ## 절차 (governance loop 기준)
 
 1. **영향 AC 식별** — 변경이 건드리는 AC ID 를 찾는다. 없으면 Story Map/AC 누락 여부 확인 → 필요시 신규 AC 제안.
 2. **scope 판정** — 각 AC 를 `dev` / `ops` / `both` 로 구분.
 3. **증거 확인** — unit / component / contract / mocked-integration 우선 (manual·e2e 는 예외). 증거 = 테스트명 / 로그 / 응답 + 변경의 **Transformation ID**(`T-YYYYMMDD-###`).
+   - **Android**: 빌드/유닛테스트 증거는 **CI(`android-verify`) run URL** 이다 (봇 노드 로컬 `gradlew` 아님 —
+     시크릿이 없어 로컬 빌드는 신뢰할 수 없다). 봇의 검증 상한은 **CI green(컴파일 + 유닛테스트)** 까지고,
+     **런타임/기능 동작은 사람이 확인**한다(ops 축, 자동화 불가). `acp-claude` 의 사람 확인 핸드오프 참조.
 4. **Development Status 갱신** — Not started / In progress / In review / Implemented / Blocked.
 5. **Operation Status** (ops·both AC) — Not verified / staging / production / monitoring / hold.
 6. **drift 검사** — 구현은 바뀌었는데 AC/문서가 안 따라오면 drift 표시 → 먼저 재매핑, 그 다음 status 재계산.
-7. **기록** — `docs/guides/VERIFICATION.md` 의 검증 기록을 갱신 + kanban `Verification Status` 필드 반영. **증거 없는 AC 는 verified 로 올리지 않는다.**
+7. **기록** — `docs/specs/VERIFICATION.md` 의 **Evidence Ledger** (AC ID ↔ 증거) 갱신 + kanban `Verification Status` 필드 반영. **증거 없는 AC 는 verified 로 올리지 않는다.**
 
 ## 가드레일
 
