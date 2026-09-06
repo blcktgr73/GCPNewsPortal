@@ -34,7 +34,9 @@ jobs:
 
       - name: Build and push container image
         run: |
-          gcloud builds submit --tag gcr.io/${{ env.PROJECT_ID }}/news-backend ./backend
+          gcloud builds submit \
+            --project=${{ env.PROJECT_ID }} \
+            --tag gcr.io/${{ env.PROJECT_ID }}/news-backend ./backend
 
       - name: Deploy to Cloud Run
         run: |
