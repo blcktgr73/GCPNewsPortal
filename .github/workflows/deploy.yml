@@ -34,16 +34,15 @@ jobs:
 
       - name: Build and push container image
         run: |
-          gcloud builds submit \
-            --project=${{ env.PROJECT_ID }} \
-            --region=${{ env.REGION }} \
-            --default-buckets-behavior=REGIONAL_USER_OWNED_BUCKET \
-            --tag gcr.io/${{ env.PROJECT_ID }}/news-backend ./backend
+          IMAGE="${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/containers/news-backend:${{ github.sha }}"
+          gcloud auth configure-docker "${{ env.REGION }}-docker.pkg.dev" --quiet
+          docker build --tag "$IMAGE" ./backend
+          docker push "$IMAGE"
 
       - name: Deploy to Cloud Run
         run: |
           gcloud run deploy news-backend \
-            --image gcr.io/${{ env.PROJECT_ID }}/news-backend \
+            --image "${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/containers/news-backend:${{ github.sha }}" \
             --platform managed \
             --region ${{ env.REGION }} \
             --allow-unauthenticated \
