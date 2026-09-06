@@ -36,6 +36,8 @@ jobs:
         run: |
           gcloud builds submit \
             --project=${{ env.PROJECT_ID }} \
+            --region=${{ env.REGION }} \
+            --default-buckets-behavior=REGIONAL_USER_OWNED_BUCKET \
             --tag gcr.io/${{ env.PROJECT_ID }}/news-backend ./backend
 
       - name: Deploy to Cloud Run
