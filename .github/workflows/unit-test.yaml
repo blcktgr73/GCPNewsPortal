@@ -10,10 +10,10 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     
     - name: Set up Python 3.11
-      uses: actions/setup-python@v3
+      uses: actions/setup-python@v5
       with:
         python-version: "3.11"
         
@@ -22,6 +22,7 @@ jobs:
         python -m pip install --upgrade pip
         # Install dependencies for news_summarizer to resolve imports
         if [ -f news_summarizer/requirements.txt ]; then pip install -r news_summarizer/requirements.txt; fi
+        if [ -f cleanup_function/requirements.txt ]; then pip install -r cleanup_function/requirements.txt; fi
         # Install testing tools
         pip install pytest pytest-mock
         
@@ -30,4 +31,4 @@ jobs:
         GEMINI_API_KEY: "test_key"
       run: |
         # Run pytest. The tests/test_news_summarizer_gemini.py file handles sys.path modification to import modules correctly.
-        pytest tests/
+        pytest tests/ cleanup_function/test_local.py

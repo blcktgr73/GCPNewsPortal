@@ -106,6 +106,12 @@ The implementation follows SOLID principles and clean code practices:
 
 ## Deployment
 
+### GitHub Actions (정식 배포 경로)
+
+`main`에 cleanup 관련 변경이 push되면 `.github/workflows/deploy.yml`이 먼저 전체 단위테스트를 통과시킨 뒤, cleanup 변경이 감지된 경우에만 `deploy-cleanup` job을 실행한다. 이 job은 `deploy_ci.sh`를 통해 Pub/Sub topic, Gen2 Cloud Function, Cloud Scheduler job을 비대화형·멱등 방식으로 생성 또는 갱신한다.
+
+기존 `deploy.sh`와 `deploy.ps1`는 로컬 부트스트랩/수동 복구용으로 유지한다. CI에서는 대화형 prompt가 있는 두 스크립트를 사용하지 않는다.
+
 ### Prerequisites
 
 1. GCP project with billing enabled
