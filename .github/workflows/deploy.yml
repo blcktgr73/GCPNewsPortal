@@ -2,7 +2,12 @@ name: Deploy to GCP
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-main
+  cancel-in-progress: false
 
 env:
   PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
@@ -16,54 +21,92 @@ permissions:
   id-token: write
 
 jobs:
-  deploy-backend:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      backend: ${{ steps.filter.outputs.backend }}
+      summarizer: ${{ steps.filter.outputs.summarizer }}
+      trigger: ${{ steps.filter.outputs.trigger }}
+      cleanup: ${{ steps.filter.outputs.cleanup }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: filter
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            backend:
+              - 'backend/**'
+              - '.github/workflows/deploy.yml'
+            summarizer:
+              - 'news_summarizer/**'
+              - '.github/workflows/deploy.yml'
+            trigger:
+              - 'trigger_function/**'
+              - '.github/workflows/deploy.yml'
+            cleanup:
+              - 'cleanup_function/**'
+              - '.github/workflows/deploy.yml'
+
+  test:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install test dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r news_summarizer/requirements.txt
+          pip install -r cleanup_function/requirements.txt
+          pip install pytest pytest-mock
+      - name: Run repository tests
+        env:
+          GEMINI_API_KEY: test_key
+        run: pytest tests/ cleanup_function/test_local.py
 
+  deploy-backend:
+    needs: [changes, test]
+    if: needs.changes.outputs.backend == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
       - name: Authenticate to GCP
         uses: google-github-actions/auth@v3
         with:
           project_id: ${{ env.PROJECT_ID }}
           workload_identity_provider: ${{ env.WIF_PROVIDER }}
           service_account: ${{ env.DEPLOYER_SERVICE_ACCOUNT }}
-
-      - name: Set up gcloud CLI
-        uses: google-github-actions/setup-gcloud@v2
-
+      - uses: google-github-actions/setup-gcloud@v2
       - name: Build and push container image
         run: |
           IMAGE="${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/containers/news-backend:${{ github.sha }}"
           gcloud auth configure-docker "${{ env.REGION }}-docker.pkg.dev" --quiet
           docker build --tag "$IMAGE" ./backend
           docker push "$IMAGE"
-
       - name: Deploy to Cloud Run
         run: |
           gcloud run deploy news-backend \
             --image "${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/containers/news-backend:${{ github.sha }}" \
             --platform managed \
-            --region ${{ env.REGION }} \
+            --region "${{ env.REGION }}" \
             --allow-unauthenticated \
-            --set-env-vars GEMINI_API_KEY=${{ env.GEMINI_API_KEY }}
+            --set-env-vars "GEMINI_API_KEY=${{ env.GEMINI_API_KEY }}"
 
   deploy-summarizer:
+    needs: [changes, test]
+    if: needs.changes.outputs.summarizer == 'true'
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
+      - uses: actions/checkout@v4
       - name: Authenticate to GCP
         uses: google-github-actions/auth@v3
         with:
           project_id: ${{ env.PROJECT_ID }}
           workload_identity_provider: ${{ env.WIF_PROVIDER }}
           service_account: ${{ env.DEPLOYER_SERVICE_ACCOUNT }}
-
-      - name: Set up gcloud CLI
-        uses: google-github-actions/setup-gcloud@v2
-
+      - uses: google-github-actions/setup-gcloud@v2
       - name: Deploy summarize_news Cloud Function
         run: |
           gcloud functions deploy summarize_news \
@@ -72,25 +115,22 @@ jobs:
             --trigger-topic worker-news-summary \
             --entry-point summarize_news \
             --source ./news_summarizer \
-            --region ${{ env.REGION }} \
-            --set-env-vars GEMINI_API_KEY=${{ env.GEMINI_API_KEY }}
+            --region "${{ env.REGION }}" \
+            --set-env-vars "GEMINI_API_KEY=${{ env.GEMINI_API_KEY }}"
 
   deploy-trigger:
+    needs: [changes, test]
+    if: needs.changes.outputs.trigger == 'true'
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
+      - uses: actions/checkout@v4
       - name: Authenticate to GCP
         uses: google-github-actions/auth@v3
         with:
           project_id: ${{ env.PROJECT_ID }}
           workload_identity_provider: ${{ env.WIF_PROVIDER }}
           service_account: ${{ env.DEPLOYER_SERVICE_ACCOUNT }}
-
-      - name: Set up gcloud CLI
-        uses: google-github-actions/setup-gcloud@v2
-
+      - uses: google-github-actions/setup-gcloud@v2
       - name: Deploy trigger_news_summary Cloud Function
         run: |
           gcloud functions deploy trigger_news_summary \
@@ -98,6 +138,25 @@ jobs:
             --runtime python311 \
             --entry-point trigger_news_summary \
             --source ./trigger_function \
-            --region ${{ env.REGION }} \
+            --region "${{ env.REGION }}" \
             --trigger-http \
             --allow-unauthenticated
+
+  deploy-cleanup:
+    needs: [changes, test]
+    if: needs.changes.outputs.cleanup == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Authenticate to GCP
+        uses: google-github-actions/auth@v3
+        with:
+          project_id: ${{ env.PROJECT_ID }}
+          workload_identity_provider: ${{ env.WIF_PROVIDER }}
+          service_account: ${{ env.DEPLOYER_SERVICE_ACCOUNT }}
+      - uses: google-github-actions/setup-gcloud@v2
+      - name: Deploy cleanup function and scheduler
+        env:
+          GOOGLE_CLOUD_PROJECT: ${{ env.PROJECT_ID }}
+          REGION: ${{ env.REGION }}
+        run: ./cleanup_function/deploy_ci.sh
